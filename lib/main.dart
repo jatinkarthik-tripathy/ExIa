@@ -31,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   TabController _controller;
   final List<Places> _places = [
-    Places(img: "1", name: "testing  ", rating: 6.9),
+    Places(img: "1", name: "test  ", rating: 6.9),
     Places(img: "2", name: "testing  ", rating: 6.9),
     Places(img: "3", name: "testing  ", rating: 6.9),
     Places(img: "4", name: "testing  ", rating: 6.9)
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage>
       rating: txRating,
     );
     setState(() {
-      _places.add(newPlace);
+      _places.add(Places(img: "7", name: "last  ", rating: 6.9));
     });
   }
 
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage>
         backgroundColor: Color(0xff263238),
         body: ListView(
           children: <Widget>[
-            new Container(
+            Container(
               decoration: new BoxDecoration(color: Color(0xff4f5b62)),
               child: new TabBar(
                 indicatorColor: Color(0xff48a999),
@@ -126,7 +126,8 @@ class _MyHomePageState extends State<MyHomePage>
                                       child: Row(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
                                         children: <Widget>[
                                           Text(
                                             _places[idx].name,
@@ -137,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage>
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
-                                           Text(
+                                          Text(
                                             _places[idx].rating.toString(),
                                             style: TextStyle(
                                               color: Colors.white,
@@ -149,7 +150,6 @@ class _MyHomePageState extends State<MyHomePage>
                                         ],
                                       ),
                                     ),
-                                   
                                   ],
                                 ),
                               )
@@ -159,8 +159,65 @@ class _MyHomePageState extends State<MyHomePage>
                       },
                       itemCount: _places.length,
                     ),
-                    Card(
-                      color: Colors.blueAccent,
+                    Container(
+                      color: Color(0xff263238),
+                      child: ListView.builder(
+                        itemBuilder: (ctx, idx) {
+                          return Card(
+                            margin: EdgeInsets.all(10),
+                            color: Colors.white,
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 50,
+                                  color: Color(0xff004c40),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            Text(
+                                              _places[idx].name,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              _places[idx].rating.toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                    height: 100,
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                                        style: TextStyle(),
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          );
+                        },
+                        itemCount: _places.length,
+                      ),
                     )
                   ],
                 )),
