@@ -31,10 +31,10 @@ class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   TabController _controller;
   final List<Places> _places = [
-    Places(img: "1", name: "test  ", rating: 6.9),
-    Places(img: "2", name: "testing  ", rating: 6.9),
-    Places(img: "3", name: "testing  ", rating: 6.9),
-    Places(img: "4", name: "testing  ", rating: 6.9)
+    Places(img: "1", name: "test1 ", rating: 6.89),
+    Places(img: "2", name: "test2  ", rating: 9.6),
+    Places(img: "3", name: "test3  ", rating: 7.2),
+    Places(img: "4", name: "test4  ", rating: 3.9)
   ];
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage>
       rating: txRating,
     );
     setState(() {
-      _places.add(Places(img: "7", name: "last  ", rating: 6.9));
+      _places.add(Places(img: "7", name: "last  ", rating: 6.89));
     });
   }
 
@@ -65,6 +65,30 @@ class _MyHomePageState extends State<MyHomePage>
         return GestureDetector(
           onTap: () {},
           child: NewPlace(_addNewPlace),
+          behavior: HitTestBehavior.opaque,
+        );
+      },
+    );
+  }
+
+  void _showDescModal(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: Container(
+            padding: EdgeInsets.all(10),
+            height: 400,
+            child: SingleChildScrollView(
+              child: Text(
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                style: TextStyle(
+                  fontSize: 25,
+                ),
+              ),
+            ),
+          ),
           behavior: HitTestBehavior.opaque,
         );
       },
@@ -107,53 +131,56 @@ class _MyHomePageState extends State<MyHomePage>
                         return Card(
                           margin: EdgeInsets.all(10),
                           color: Colors.white,
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                height: 200,
-                                width: MediaQuery.of(context).size.width,
-                                // color: Colors.amber,
-                                child: Image.asset(
-                                    'assets/images/bamboo_hat.PNG',
-                                    fit: BoxFit.cover),
-                              ),
-                              Container(
-                                height: 50,
-                                color: Color(0xff004c40),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          Text(
-                                            _places[idx].name,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Text(
-                                            _places[idx].rating.toString(),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                          child: InkWell(
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  height: 200,
+                                  width: MediaQuery.of(context).size.width,
+                                  // color: Colors.amber,
+                                  child: Image.asset(
+                                      'assets/images/landscape.jpg',
+                                      fit: BoxFit.cover),
                                 ),
-                              )
-                            ],
+                                Container(
+                                  height: 50,
+                                  color: Color(0xff004c40),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            Text(
+                                              _places[idx].name,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            Text(
+                                              _places[idx].rating.toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                            onTap: () => _showDescModal(context),
                           ),
                         );
                       },
@@ -205,13 +232,14 @@ class _MyHomePageState extends State<MyHomePage>
                                   ),
                                 ),
                                 Container(
-                                    height: 100,
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                                        style: TextStyle(),
-                                      ),
-                                    ))
+                                  height: 100,
+                                  child: SingleChildScrollView(
+                                    child: Text(
+                                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                                      style: TextStyle(),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           );

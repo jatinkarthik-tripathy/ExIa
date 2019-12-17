@@ -1,4 +1,4 @@
-# ExIa
+# exia
 
 A new Flutter project.
 
