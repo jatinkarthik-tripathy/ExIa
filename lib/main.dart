@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:exia/new_place.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,12 +32,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   TabController _controller;
-  final List<Places> _places = [
-    Places(img: "1", name: "test1 ", rating: 6.89),
-    Places(img: "2", name: "test2  ", rating: 9.6),
-    Places(img: "3", name: "test3  ", rating: 7.2),
-    Places(img: "4", name: "test4  ", rating: 3.9)
-  ];
+  final List<Places> _places = [];
   @override
   void initState() {
     super.initState();
@@ -47,14 +44,13 @@ class _MyHomePageState extends State<MyHomePage>
     backgroundColor: Color(0xff000a12),
   );
 
-  void _addNewPlace(String txImg, String txName, double txRating) {
+  void _addNewPlace(
+      File txImg, String txName, double txRating, String txDesc, String txExp) {
     final newPlace = Places(
-      img: txImg,
-      name: txName,
-      rating: txRating,
-    );
+        img: txImg, name: txName, rating: txRating, desc: txDesc, exp: txExp);
     setState(() {
-      _places.add(Places(img: "7", name: "last  ", rating: 6.89));
+      _places.add(newPlace);
+      print(_places);
     });
   }
 
@@ -71,7 +67,7 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  void _showDescModal(BuildContext ctx) {
+  void _showDescModal(BuildContext ctx, int idx) {
     showModalBottomSheet(
       context: ctx,
       builder: (_) {
@@ -82,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage>
             height: 400,
             child: SingleChildScrollView(
               child: Text(
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                _places[idx].desc,
                 style: TextStyle(
                   fontSize: 25,
                 ),
@@ -126,66 +122,86 @@ class _MyHomePageState extends State<MyHomePage>
                 child: TabBarView(
                   controller: _controller,
                   children: <Widget>[
-                    ListView.builder(
-                      itemBuilder: (ctx, idx) {
-                        return Card(
-                          margin: EdgeInsets.all(10),
-                          color: Colors.white,
-                          child: InkWell(
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  height: 200,
-                                  width: MediaQuery.of(context).size.width,
-                                  // color: Colors.amber,
-                                  child: Image.asset(
-                                      'assets/images/landscape.jpg',
-                                      fit: BoxFit.cover),
-                                ),
-                                Container(
-                                  height: 50,
-                                  color: Color(0xff004c40),
-                                  child: Row(
+                    _places.isEmpty
+                        ? Container(
+                            height: MediaQuery.of(context).size.height,
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.white,
+                            child: Text(
+                              'No Transactions Done Yet!',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemBuilder: (ctx, idx) {
+                              return Card(
+                                margin: EdgeInsets.all(10),
+                                color: Colors.white,
+                                child: InkWell(
+                                  child: Column(
                                     children: <Widget>[
-                                      Expanded(
+                                      Container(
+                                        height: 200,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        // color: Colors.amber,
+                                        child: Image.asset(
+                                            (_places[idx].img != null)
+                                                ? _places[idx].img.path
+                                                : "assets/images/landscape.jpg",
+                                            fit: BoxFit.cover),
+                                      ),
+                                      Container(
+                                        height: 50,
+                                        color: Color(0xff004c40),
                                         child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
                                           children: <Widget>[
-                                            Text(
-                                              _places[idx].name,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
+                                            Expanded(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: <Widget>[
+                                                  Text(
+                                                    _places[idx].name,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  Text(
+                                                    _places[idx]
+                                                        .rating
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ],
                                               ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            Text(
-                                              _places[idx].rating.toString(),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              textAlign: TextAlign.center,
                                             ),
                                           ],
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
-                                )
-                              ],
-                            ),
-                            onTap: () => _showDescModal(context),
+                                  onTap: () => _showDescModal(context, idx),
+                                ),
+                              );
+                            },
+                            itemCount: _places.length,
                           ),
-                        );
-                      },
-                      itemCount: _places.length,
-                    ),
                     Container(
                       color: Color(0xff263238),
                       child: ListView.builder(
@@ -235,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage>
                                   height: 100,
                                   child: SingleChildScrollView(
                                     child: Text(
-                                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                                      _places[idx].exp,
                                       style: TextStyle(),
                                     ),
                                   ),

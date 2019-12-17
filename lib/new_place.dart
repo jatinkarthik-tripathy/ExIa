@@ -1,93 +1,10 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
-class NewPlace extends StatefulWidget {
-  final Function addTx;
-
-  NewPlace(this.addTx);
-
-  @override
-  _NewPlaceState createState() => _NewPlaceState();
-}
-
-class _NewPlaceState extends State<NewPlace> {
-  final nameController = TextEditingController();
-  final descController = TextEditingController();
-  final expController = TextEditingController();
-
-  void _submitPlace() {
-    widget.addTx("5", "dejagd", "9.6");
-    Navigator.of(context).pop();
-  }
-
-  Widget build(BuildContext context) {
-    return Container(
-        width: double.infinity,
-        padding: EdgeInsets.only(
-          top: 10,
-          left: 10,
-          right: 10,
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        color: Colors.white,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              TextField(
-                style: TextStyle(color: Colors.white),
-                cursorColor: Color(0xff48a999),
-                decoration: InputDecoration(labelText: 'Place Name'),
-                controller: nameController,
-                onSubmitted: (_) => _submitPlace(),
-              ),
-              TextField(
-                style: TextStyle(color: Colors.white),
-                cursorColor: Color(0xff48a999),
-                decoration: InputDecoration(labelText: 'Rating'),
-                keyboardType: TextInputType.number,
-                controller: nameController,
-                onSubmitted: (_) => _submitPlace(),
-              ),
-              TextField(
-                style: TextStyle(color: Colors.white),
-                minLines: 5,
-                maxLines: 10,
-                decoration: InputDecoration(labelText: 'Description'),
-                controller: descController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submitPlace(),
-              ),
-              TextField(
-                style: TextStyle(color: Colors.white),
-                minLines: 5,
-                maxLines: 10,
-                decoration: InputDecoration(labelText: 'Experience'),
-                controller: expController,
-                keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submitPlace(),
-              ),
-              // ImageCapture(),
-              RaisedButton(
-                child: Text(
-                  'Add Entry',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: _submitPlace,
-                color: Color(0xff00796b),
-              )
-            ],
-          ),
-        ));
-  }
-}
 
 class ImageCapture extends StatefulWidget {
   createState() => _ImageCaptureState();
@@ -136,6 +53,10 @@ class _ImageCaptureState extends State<ImageCapture> {
               icon: Icon(Icons.photo_album),
               onPressed: () => _pickImage(ImageSource.gallery),
             ),
+            IconButton(
+              icon: Icon(Icons.done),
+              onPressed: () => Navigator.pop(context, _imageFile),
+            ),
           ],
         ),
       ),
@@ -159,5 +80,111 @@ class _ImageCaptureState extends State<ImageCapture> {
         ],
       ),
     );
+  }
+}
+
+class NewPlace extends StatefulWidget {
+  final Function addTx;
+
+  NewPlace(this.addTx);
+
+  @override
+  _NewPlaceState createState() => _NewPlaceState();
+}
+
+class _NewPlaceState extends State<NewPlace> {
+  final nameController = TextEditingController();
+  final ratingController = TextEditingController();
+  final descController = TextEditingController();
+  final expController = TextEditingController();
+  File _img = null;
+  void submitPlace() {
+    widget.addTx(_img, nameController.text, double.parse(ratingController.text),
+        descController.text, expController.text);
+    Navigator.of(context).pop();
+  }
+
+  void goToSecondScreen() async {
+    _img = await Navigator.push(
+      context,
+      new MaterialPageRoute(
+        builder: (BuildContext context) => new ImageCapture(),
+      ),
+    );
+  }
+
+  Widget build(BuildContext context) {
+    return Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        color: Colors.white,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              TextField(
+                style: TextStyle(color: Colors.black),
+                cursorColor: Color(0xff48a999),
+                decoration: InputDecoration(labelText: 'Place Name'),
+                controller: nameController,
+                onSubmitted: (_) => submitPlace(),
+              ),
+              TextField(
+                style: TextStyle(color: Colors.black),
+                cursorColor: Color(0xff48a999),
+                decoration: InputDecoration(labelText: 'Rating'),
+                keyboardType: TextInputType.number,
+                controller: ratingController,
+                onSubmitted: (_) => submitPlace(),
+              ),
+              TextField(
+                style: TextStyle(color: Colors.black),
+                minLines: 5,
+                maxLines: 10,
+                decoration: InputDecoration(labelText: 'Description'),
+                controller: descController,
+                onSubmitted: (_) => submitPlace(),
+              ),
+              TextField(
+                style: TextStyle(color: Colors.black),
+                minLines: 5,
+                maxLines: 10,
+                decoration: InputDecoration(labelText: 'Experience'),
+                controller: expController,
+                onSubmitted: (_) => submitPlace(),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly  ,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text(
+                      'Add Photo',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () => goToSecondScreen(),
+                    color: Color(0xff00796b),
+                  ),
+                  RaisedButton(
+                    child: Text(
+                      'Add Entry',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: submitPlace,
+                    color: Color(0xff00796b),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
   }
 }
