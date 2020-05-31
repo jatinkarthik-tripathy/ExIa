@@ -12,6 +12,7 @@ class ImageCapture extends StatefulWidget {
 
 class _ImageCaptureState extends State<ImageCapture> {
   File _imageFile;
+
   Future<void> _pickImage(ImageSource src) async {
     File selected = await ImagePicker.pickImage(source: src);
     setState(() {
@@ -98,6 +99,7 @@ class _NewPlaceState extends State<NewPlace> {
   final descController = TextEditingController();
   final expController = TextEditingController();
   File _img = null;
+
   void submitPlace() {
     widget.addTx(_img, nameController.text, double.parse(ratingController.text),
         descController.text, expController.text);
@@ -159,7 +161,7 @@ class _NewPlaceState extends State<NewPlace> {
                 onSubmitted: (_) => submitPlace(),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly  ,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   RaisedButton(
                     child: Text(

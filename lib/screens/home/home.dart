@@ -1,11 +1,11 @@
+import 'dart:io';
+
+import 'package:exia/models/places.dart';
+import 'package:exia/new_place.dart';
 import 'package:exia/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:exia/new_place.dart';
-import 'package:exia/models/places.dart';
 
 class Home extends StatelessWidget {
-
   // @override
   // Widget build(BuildContext context) {
   // return Container(
@@ -43,9 +43,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-
   TabController _controller;
   final List<Places> _places = [];
+  int placeId=0;
+
   @override
   void initState() {
     super.initState();
@@ -60,7 +61,9 @@ class _MyHomePageState extends State<MyHomePage>
       FlatButton.icon(
         color: Colors.white,
         icon: Icon(Icons.person),
-        label: Text('logout',),
+        label: Text(
+          'logout',
+        ),
         onPressed: () async {
           await _auth.signOut();
         },
@@ -71,11 +74,12 @@ class _MyHomePageState extends State<MyHomePage>
   void _addNewPlace(
       File txImg, String txName, double txRating, String txDesc, String txExp) {
     final newPlace = Places(
-        img: txImg, name: txName, rating: txRating, desc: txDesc, exp: txExp);
+        id: placeId, img: txImg, name: txName, rating: txRating, desc: txDesc, exp: txExp);
     setState(() {
       _places.add(newPlace);
       print(_places);
     });
+    placeId += 1;
   }
 
   void _startAddNewPlace(BuildContext ctx) {
@@ -151,10 +155,14 @@ class _MyHomePageState extends State<MyHomePage>
                             height: MediaQuery.of(context).size.height,
                             width: MediaQuery.of(context).size.width,
                             color: Colors.white,
-                            child: Text(
-                              'No Transactions Done Yet!',
-                              style: TextStyle(
-                                fontSize: 20,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'Empty! Looks like youre staying safe in your home :).',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                ),
                               ),
                             ),
                           )
@@ -185,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage>
                                             Expanded(
                                               child: Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
                                                         .spaceAround,
@@ -211,6 +219,15 @@ class _MyHomePageState extends State<MyHomePage>
                                                           FontWeight.bold,
                                                     ),
                                                     textAlign: TextAlign.center,
+                                                  ),
+                                                  IconButton(
+                                                    icon: Icon(Icons.remove),
+                                                    color: Colors.white,
+                                                    onPressed: () {
+                                                      setState(() {
+                                                        _places.removeAt(idx);
+                                                      });
+                                                    }
                                                   ),
                                                 ],
                                               ),
