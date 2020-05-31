@@ -4,6 +4,11 @@ import 'package:exia/models/places.dart';
 import 'package:exia/new_place.dart';
 import 'package:exia/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 class Home extends StatelessWidget {
   // @override
@@ -29,6 +34,10 @@ class Home extends StatelessWidget {
   // );
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Expenses Maintainer',
       home: MyHomePage(),
@@ -44,13 +53,66 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   TabController _controller;
-  final List<Places> _places = [];
-  int placeId=0;
+  List<Places> _places = [];
+  int placeId = 0;
 
   @override
   void initState() {
     super.initState();
     _controller = new TabController(length: 2, vsync: this);
+    getEntries();
+  }
+
+  Future<void> getEntries() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> ids = [];
+    List<String> imgs = [];
+    List<String> names = [];
+    List<String> ratings = [];
+    List<String> descs = [];
+    List<String> exps = [];
+
+    ids = prefs.getStringList("id");
+    names = prefs.getStringList("name");
+    imgs = prefs.getStringList("img");
+    ratings = prefs.getStringList("rating");
+    descs = prefs.getStringList("desc");
+    exps = prefs.getStringList("exp");
+
+    await new Future.delayed(const Duration(seconds: 1));
+    setState(() {
+      for (int i = 0; i < ids.length; i++) {
+        File img_path = ((imgs[i]!="null")?File(imgs[i]):null);
+        _places.add(Places(id: int.parse(ids[i]), img: img_path, name: names[i], rating: double.parse(ratings[i]), desc: descs[i], exp: exps[i]));
+      }
+    });
+  }
+  Future<void> setEntries() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> ids = [];
+    List<String> imgs = [];
+    List<String> names = [];
+    List<String> ratings = [];
+    List<String> descs = [];
+    List<String> exps = [];
+    for (int i = 0; i < _places.length; i++) {
+      ids.add(_places[i].id.toString());
+      if(_places[i].img == null) {
+        imgs.add("null");
+      } else {
+        imgs.add(_places[i].img.path.toString());
+      }
+      names.add(_places[i].name.toString());
+      ratings.add(_places[i].rating.toString());
+      descs.add(_places[i].desc.toString());
+      exps.add(_places[i].exp.toString());
+    }
+    prefs.setStringList("id", ids);
+    prefs.setStringList("img", imgs);
+    prefs.setStringList("name", names);
+    prefs.setStringList("rating", ratings);
+    prefs.setStringList("desc", descs);
+    prefs.setStringList("exp", exps);
   }
 
   static final AuthService _auth = AuthService();
@@ -74,12 +136,17 @@ class _MyHomePageState extends State<MyHomePage>
   void _addNewPlace(
       File txImg, String txName, double txRating, String txDesc, String txExp) {
     final newPlace = Places(
-        id: placeId, img: txImg, name: txName, rating: txRating, desc: txDesc, exp: txExp);
+        id: placeId,
+        img: txImg,
+        name: txName,
+        rating: txRating,
+        desc: txDesc,
+        exp: txExp);
     setState(() {
       _places.add(newPlace);
-      print(_places);
     });
     placeId += 1;
+    setEntries();
   }
 
   void _startAddNewPlace(BuildContext ctx) {
@@ -221,14 +288,13 @@ class _MyHomePageState extends State<MyHomePage>
                                                     textAlign: TextAlign.center,
                                                   ),
                                                   IconButton(
-                                                    icon: Icon(Icons.remove),
-                                                    color: Colors.white,
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        _places.removeAt(idx);
-                                                      });
-                                                    }
-                                                  ),
+                                                      icon: Icon(Icons.remove),
+                                                      color: Colors.white,
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          _places.removeAt(idx);
+                                                        });
+                                                      }),
                                                 ],
                                               ),
                                             ),
